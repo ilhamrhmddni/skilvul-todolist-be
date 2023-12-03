@@ -1,130 +1,82 @@
-const { Tugas } = require("../models");
+const Todo = require('../models/todo');
 
 module.exports = {
-    ambilSemuaTugas: async (req, res) => {
-        const idPengguna = req.payload.id; // Ambil ID pengguna dari token
-        const tugas = await Tugas.findAll({
-            where: {
-                user_id: idPengguna
-            }
-        });
+	getAllTodo: async (req, res) => {
+		try {
+			const todos = await Todo.find();
 
-        res.status(200).json({
-            message: "Berhasil mengambil data tugas",
-            data: tugas
-        });
-    },
+			res.json({
+				message: 'Berhasil Menampilkan Todos',
+				todos: todos,
+			});
+		} catch {
+			res.json({ message: 'Gagal Menampilkan Todos' });
+		}
+	},
 
-    ambilTugasById: async (req, res) => {
-        const idTugas = req.params.id;
+	getTodoById: async (req, res) => {
+		try {
+			const id = req.params.id;
+			const todo = await Todo.findById(id).populate('userId', ['name']);
 
-        try {
-            // Temukan tugas berdasarkan ID
-            const tugas = await Tugas.findByPk(idTugas);
+			if (!todo) {
+				return res.json({
+					message: 'Pengguna tidak ditemukan',
+				});
+			}
 
-            if (!tugas) {
-                return res.status(404).json({
-                    message: 'Tugas tidak ditemukan'
-                });
-            }
+			res.json({
+				message: 'Berhasil Mendapatkan Todo',
+				data: todo,
+			});
+		} catch {
+			res.json({
+				message: 'Gagal mendapatkan Todo',
+			});
+		}
+	},
 
-            res.status(200).json({
-                message: 'Berhasil mengambil tugas',
-                data: tugas
-            });
+	createTodo: async (req, res) => {
+		let todo = req.body;
+		try {
+			await Todo.create(todo);
+			res.json({
+				message: 'Berhasil Menambahkan Todo',
+			});
+		} catch {
+			res.json({ message: 'Gagal Menambahkan Todo' });
+		}
+	},
 
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({
-                message: 'Terjadi kesalahan server'
-            });
-        }
-    },
+	updateTodo: async (req, res) => {
+		const id = req.params.id;
+		const todo = req.body;
 
-    buatTugas: async (req, res) => {
-        const idPengguna = req.payload.id; // Ambil ID pengguna dari token
-        let data = req.body;
-        data.user_id = idPengguna;
+		try {
+			const todoUpdate = await Todo.findByIdAndUpdate(id, todo, { new: true });
+			res.json({
+				message: 'Berhasil Mengupdate Todo',
+				data: todoUpdate,
+			});
+		} catch {
+			res.json({
+				message: 'Gagal Mengupdate Todo',
+			});
+		}
+	},
 
-        try {
-            // Input data
-            if (data.value) {
-                await Tugas.create(data);
+	deleteTodo: async (req, res) => {
+		try {
+			const id = req.params.id;
+			await Todo.findByIdAndDelete(id);
 
-                // Kirim respons
-                res.status(201).json({
-                    message: "Berhasil menambahkan tugas"
-                });
-            } else {
-                res.json({
-                    message: "Gagal menambahkan tugas karena nilai tidak ada",
-                });
-            }
-
-        } catch (error) {
-            res.json({
-                message: "Gagal menambahkan tugas",
-                error: error.message
-            });
-        }
-    },
-
-    perbaruiTugas: async (req, res) => {
-        const idTugas = req.params.id;
-        const data = req.body;
-
-        try {
-            // Temukan tugas berdasarkan ID
-            const tugas = await Tugas.findByPk(idTugas);
-
-            if (!tugas) {
-                return res.status(404).json({
-                    message: 'Tugas tidak ditemukan'
-                });
-            }
-
-            // Perbarui data tugas
-            await tugas.update(data);
-
-            res.json({
-                message: 'Tugas berhasil diperbarui',
-                data: tugas
-            });
-
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({
-                message: 'Terjadi kesalahan server'
-            });
-        }
-    },
-
-    hapusTugas: async (req, res) => {
-        const idTugas = req.params.id;
-
-        try {
-            // Temukan tugas berdasarkan ID
-            const tugas = await Tugas.findByPk(idTugas);
-
-            if (!tugas) {
-                return res.status(404).json({
-                    message: 'Tugas tidak ditemukan'
-                });
-            }
-
-            // Hapus tugas
-            await tugas.destroy();
-
-            res.json({
-                message: 'Tugas berhasil dihapus',
-                data: tugas
-            });
-
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({
-                message: 'Terjadi kesalahan server'
-            });
-        }
-    }
+			res.json({
+				message: 'Berhasil Menghapus Todo',
+			});
+		} catch {
+			res.json({
+				message: 'Gagal Menghapus Todo',
+			});
+		}
+	},
 };

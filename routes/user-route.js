@@ -1,11 +1,21 @@
-const express = require("express");
-const router = express.Router();
-const { ambilSemuaPengguna, ambilPenggunaById, buatPengguna, perbaruiPengguna, hapusPengguna } = require("../controllers/user-controller");
+const express = require('express');
+const route = express.Router();
 
-router.get("/", ambilSemuaPengguna);
-router.get("/:id", ambilPenggunaById);
-router.post("/", buatPengguna);
-router.put("/:id", perbaruiPengguna);
-router.delete("/:id", hapusPengguna);
+const {
+	getAllUser,
+	createUser,
+	getUserById,
+	updateUser,
+	deleteUser,
+	getUserTodos,
+} = require('../controllers/user-controller');
+const verifyToken = require('../middleware/auth');
 
-module.exports = router;
+route.get('/', getAllUser);
+route.get('/:id', getUserById);
+route.get('/todos/:id', getUserTodos);
+route.post('/', createUser);
+route.put('/:id', updateUser);
+route.delete('/:id  ', deleteUser);
+
+module.exports = route;
