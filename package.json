@@ -4,7 +4,7 @@
 	"description": "Database mysql using :",
 	"main": "app.js",
 	"engines": {
-		"node": "14.x"
+		"node": "20.x"
 	},
 	"dependencies": {
 		"abbrev": "^1.1.1",
