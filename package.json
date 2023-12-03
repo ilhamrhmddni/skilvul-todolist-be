@@ -1,7 +1,7 @@
 {
   "name": "skilvul-todolist-be",
   "version": "1.0.0",
-  "description": "Database mysql using :",
+  "description": "Database mysql using : mongodb",
   "main": "app.js",
   "dependencies": {
     "abbrev": "^1.1.1",
@@ -167,6 +167,10 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "author": "@ilhamrhmddni",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "skilvul-todolist-be"
+  }
 }
