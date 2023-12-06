@@ -9,7 +9,6 @@ const {
 	deleteUser,
 	getUserTodos,
 } = require('../controllers/user-controller');
-const verifyToken = require('../middleware/auth');
 
 route.get('/', getAllUser);
 route.get('/:id', getUserById);
